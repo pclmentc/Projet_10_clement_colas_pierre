@@ -7,19 +7,25 @@ import "./style.scss";
 const Slider = () => {
   const { data } = useData();
   const [index, setIndex] = useState(0);
+
   // Tri des événements par ordre décroissant des dates
   const byDateDesc = data?.focus.slice().sort((evtA, evtB) =>
     new Date(evtB.date) - new Date(evtA.date)
   );
+
+  // correction de l'affichage d'un slide blanc en fin de boucle
   const nextCard = () => {
-    setTimeout(
-      () => setIndex(index < byDateDesc.length ? index + 1 : 0),
-      5000
-    );
+    setTimeout(() => {
+      setIndex((prevIndex) => (prevIndex < byDateDesc.length - 1 ? prevIndex + 1 : 0));
+    }, 5000);
   };
+
   useEffect(() => {
+    if (byDateDesc && byDateDesc.length > 0) {
     nextCard();
-  });
+  }
+}, [byDateDesc]);
+// Vérifiez si byDateDesc est défini avant de mapper les slides
   return (
     <div className="SlideCardList">
       {byDateDesc?.map((event, idx) => (
