@@ -7,6 +7,7 @@ import "./style.scss";
 const Slider = () => {
   const { data } = useData();
   const [index, setIndex] = useState(0);
+  const [timeoutId, setTimeoutId] = useState(null); // Garder une référence à l'ID du timeout
 
   // Tri des événements par ordre décroissant des dates
   const byDateDesc = data?.focus.slice().sort((evtA, evtB) =>
@@ -15,16 +16,30 @@ const Slider = () => {
 
   // correction de l'affichage d'un slide blanc en fin de boucle
   const nextCard = () => {
-    setTimeout(() => {
+      setTimeout(() => {
       setIndex((prevIndex) => (prevIndex < byDateDesc.length - 1 ? prevIndex + 1 : 0));
-    }, 5000);
+    }, 15000);
+  };
+
+  const handlePaginationClick = (idx) => {
+    // Annuler le délai en cours
+    clearTimeout(timeoutId);
+    // Mettre à jour l'index
+    setIndex(idx);
+    // Démarrer un nouveau délai
+    const newTimeoutId = nextCard();
+    setTimeoutId(newTimeoutId);
   };
 
   useEffect(() => {
     if (byDateDesc && byDateDesc.length > 0) {
-    nextCard();
-  }
-}, [byDateDesc]);
+      // Réinitialiser le délai à chaque changement d'index
+      clearTimeout(timeoutId);
+      const newTimeoutId = nextCard();
+      setTimeoutId(newTimeoutId);
+    }
+  }, [index, byDateDesc]); // Mettre à jour le timeout lorsqu'un changement d'index ou de données se produit
+
 // Vérifiez si byDateDesc est défini avant de mapper les slides
   return (
     <div className="SlideCardList">
@@ -53,6 +68,7 @@ const Slider = () => {
                   type="radio"
                   name="radio-button"
                   checked={idx === radioIdx}
+                  onClick={() => handlePaginationClick(radioIdx)}
                 />
               ))}
             </div>
