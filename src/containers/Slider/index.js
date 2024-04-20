@@ -18,7 +18,7 @@ const Slider = () => {
   const nextCard = () => {
       setTimeout(() => {
       setIndex((prevIndex) => (prevIndex < byDateDesc.length - 1 ? prevIndex + 1 : 0));
-    }, 15000);
+    }, 8000);
   };
 
   const handlePaginationClick = (idx) => {
