@@ -19,7 +19,7 @@ const Slider = () => {
   const nextCard = () => {
     setTimeout(() => {
       setIndex((prevIndex) => (prevIndex < byDateDesc.length - 1 ? prevIndex + 1 : 0));
-    }, 5000);
+    }, 6000);
   };
 
   const handlePaginationClick = (idx) => {
@@ -63,11 +63,11 @@ const Slider = () => {
         <div className="SlideCard__pagination">
           {byDateDesc.map((_, radioIdx) => (
             <input
-              key={uuidv4()}
+              key={uuidv4()}// Utilisation de uuidv4() pour générer une clé unique
               type="radio"
               name="pagination"
               checked={index === radioIdx}
-              onClick={() => handlePaginationClick(radioIdx)}
+              onChange={() => handlePaginationClick(radioIdx)}
             />
           ))}
         </div>
