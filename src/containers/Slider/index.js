@@ -16,30 +16,21 @@ const Slider = () => {
   ) : [];
 
   // correction de l'affichage d'un slide blanc en fin de boucle
-  const nextCard = () => {
-    setTimeout(() => {
-      setIndex((prevIndex) => (prevIndex < byDateDesc.length - 1 ? prevIndex + 1 : 0));
-    }, 6000);
+  const nextCard = () => {    
+      setIndex((prevIndex) => (prevIndex < byDateDesc.length - 1 ? prevIndex + 1 : 0));    
   };
 
   const handlePaginationClick = (idx) => {
-    // Annuler le délai en cours
     clearTimeout(timeoutId);
-    // Mettre à jour l'index
     setIndex(idx);
-    // Démarrer un nouveau délai
-    const newTimeoutId = nextCard();
+    const newTimeoutId = setTimeout(nextCard, 6000);
     setTimeoutId(newTimeoutId);
   };
 
   useEffect(() => {
-    if (byDateDesc && byDateDesc.length > 0) {
-      // Réinitialiser le délai à chaque changement d'index
-      clearTimeout(timeoutId);
-      const newTimeoutId = nextCard();
-      setTimeoutId(newTimeoutId);
-    }
-  }, [index, byDateDesc]); // Mettre à jour le timeout lorsqu'un changement d'index ou de données se produit
+    const timerId = setTimeout(nextCard, 6000);
+    return () => clearTimeout(timerId);
+  }, [index]);
 
   // Vérifiez si byDateDesc est défini avant de mapper les slides
   return (
