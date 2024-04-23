@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import { getMonth } from "../../helpers/Date";
-
 import "./style.scss";
 
 const EventCard = ({
@@ -37,7 +36,7 @@ EventCard.propTypes = {
   label: PropTypes.string.isRequired,
 };
 
-EventCard.defaultProps = {  
+EventCard.defaultProps = {   
   imageAlt: "image",
   small: false,
 }

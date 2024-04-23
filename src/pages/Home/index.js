@@ -122,7 +122,7 @@ const Page = () => {
           date={new Date(last?.date)}
           small
           // label dynamique
-          label={last?.type}
+          label={last?.type || ""}/* Utilisation d'une chaîne vide comme valeur par défaut */
         />
       </div>
       <div className="col contact">
