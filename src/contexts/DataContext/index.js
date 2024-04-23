@@ -5,6 +5,7 @@ import {
   useContext,
   useEffect,
   useState,
+  useMemo,
 } from "react";
 
 const DataContext = createContext({});
@@ -19,6 +20,20 @@ export const api = {
 export const DataProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
+
+  // Ajouté pour stocker l'événement le plus récent en fonction de la date
+  const [last, setLast] = useState(null);
+
+  // Ajouté pour surveiller les changements de 'data' et définir 'last' en conséquence
+  useEffect(() => {
+    if (data && data.events) {
+      // Trie les événements par date dans l'ordre décroissant
+      const sortedEvents = data.events.sort((a, b) => new Date(b.date) - new Date(a.date));
+      // Défini l'événement le plus récent
+      setLast(sortedEvents[0]);
+    }
+  }, [data]);
+
   const getData = useCallback(async () => {
     try {
       setData(await api.loadData());
@@ -31,14 +46,13 @@ export const DataProvider = ({ children }) => {
     getData();
   });
   
+   // useMemo garanti que la valeur fournie à DataContext.Provider ne change pas à chaque rendu
+   const providerValue = useMemo(() => ({
+    data, error, last
+  }), [data, error, last]);
+
   return (
-    <DataContext.Provider
-      // eslint-disable-next-line react/jsx-no-constructed-context-values
-      value={{
-        data,
-        error,
-      }}
-    >
+    <DataContext.Provider value={providerValue}>
       {children}
     </DataContext.Provider>
   );
@@ -47,6 +61,9 @@ export const DataProvider = ({ children }) => {
 DataProvider.propTypes = {
   children: PropTypes.node.isRequired,
 }
+DataProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
 
 export const useData = () => useContext(DataContext);
 
