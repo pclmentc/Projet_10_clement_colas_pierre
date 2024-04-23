@@ -10,33 +10,39 @@ import "./style.css";
 const PER_PAGE = 9;
 
 const EventList = () => {
-  const { data, error } = useData();
-  const [type, setType] = useState();
-  const [currentPage, setCurrentPage] = useState(1);
-  const filteredEvents = (
-    (!type
-      ? data?.events
-      : data?.events) || []
-  ).filter((event, index) => {
-    if (
-      (currentPage - 1) * PER_PAGE <= index &&
-      PER_PAGE * currentPage > index
-    ) {
-      return true;
+  const { data, error } = useData();// Récupération des données et des erreurs éventuelles
+  const [type, setType] = useState();// État pour la catégorie sélectionnée
+  const [currentPage, setCurrentPage] = useState(1);// État pour la page actuelle
+  
+  let filteredEvents = [];// Initialisation du tableau d'événements filtrés
+   // Filtre en fonction du type selectionné
+   if (data?.events) {
+    if (type) {
+      filteredEvents = data.events.filter((event) => event.type === type);
+    } else {
+      filteredEvents = data.events;
     }
-    return false;
-  });
+  }
+  // Pagination des événements filtrés
+  filteredEvents = filteredEvents.filter(
+    (event, index) =>
+      (currentPage - 1) * PER_PAGE <= index && PER_PAGE * currentPage > index
+  );
+
+  // Fonction pour changer le type de catégorie et réinitialiser la page   
   const changeType = (evtType) => {
     setCurrentPage(1);
     setType(evtType);
   };
+
   const pageNumber = Math.floor((filteredEvents?.length || 0) / PER_PAGE) + 1;
+  // Création d'un ensemble de types pour le menu déroulant
   const typeList = new Set(data?.events.map((event) => event.type));
   return (
     <>
       {error && <div>An error occured</div>}
       {data === null ? (
-        "loading"
+        "Chargement"
       ) : (
         <>
           <h3 className="SelectTitle">Catégories</h3>
@@ -45,7 +51,7 @@ const EventList = () => {
             onChange={(value) => (value ? changeType(value) : changeType(null))}
           />
           <div id="events" className="ListContainer">
-            {filteredEvents.map((event) => (
+            {filteredEvents.map((event) => event && (
               <Modal key={event.id} Content={<ModalEvent event={event} />}>
                 {({ setIsOpened }) => (
                   <EventCard

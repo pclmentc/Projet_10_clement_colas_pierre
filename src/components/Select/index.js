@@ -15,10 +15,16 @@ const Select = ({
 }) => {
   const [value, setValue] = useState();
   const [collapsed, setCollapsed] = useState(true);
+
+  // Fonction pour changer la valeur sélectionnée du menu déroulant
   const changeValue = (newValue) => {
-    onChange();
+  // Mettre à jour la valeur locale du composant     
     setValue(newValue);
-    setCollapsed(true);
+  // Mettre à jour l'état de collapsation du menu déroulant  
+    setCollapsed(true);// Le menu déroulant doit être replié après avoir sélectionné une valeur
+    // Déclencher la fonction onChange passée en tant que propriété 
+    // et lui transmettre la nouvelle valeur pour informer le parent du changement
+    onChange(newValue);
   };
   return (
     <div className={`SelectContainer ${type}`} data-testid="select-testid">
