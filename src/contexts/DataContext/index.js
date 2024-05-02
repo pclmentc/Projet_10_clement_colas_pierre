@@ -44,7 +44,7 @@ export const DataProvider = ({ children }) => {
   useEffect(() => {
     if (data) return;
     getData();
-  });
+  }, [data, getData]);
   
    // useMemo garanti que la valeur fournie à DataContext.Provider ne change pas à chaque rendu
    const providerValue = useMemo(() => ({
@@ -58,9 +58,6 @@ export const DataProvider = ({ children }) => {
   );
 };
 
-DataProvider.propTypes = {
-  children: PropTypes.node.isRequired,
-}
 DataProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
